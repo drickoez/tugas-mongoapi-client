@@ -39,7 +39,7 @@ const Home = () => {
         <tbody>
           {console.log(typeof productList)}
           {productList.map((value) => (
-            <tr key={value}>
+            <tr>
               <td>{value._id}</td>
               <td>{value.name}</td>
               <td className="text-right">RP. {value.price}</td>
@@ -47,7 +47,11 @@ const Home = () => {
                 <Link to="/detail" className="btn btn-sm btn-info">
                   Detail
                 </Link>
-                <Link to="/edit" className="btn btn-sm btn-warning">
+                {console.log("valueID: ", value._id)}
+                <Link
+                  to={`/edit/${value._id}`}
+                  className="btn btn-sm btn-warning"
+                >
                   Edit
                 </Link>
                 <Link to="#" className="btn btn-sm btn-danger">

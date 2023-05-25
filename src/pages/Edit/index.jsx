@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Input from "../../components/Input";
 import axios from "axios";
 
@@ -8,9 +8,28 @@ const Edit = ({ value }) => {
   const [stocks, setStocks] = useState(value?.data?.stocks);
   const [status, setStatus] = useState(value?.data?.status);
 
+  const [productDetail, setProductDetail] = useState({});
+
+  useEffect(() => {
+    getProductDetail();
+  }, {});
+
+  const getProductDetail = async () => {
+    console.log(match.params._id);
+    try {
+      const response = await axios.get(
+        `http://localhost:9000/api/v1/product/${match.params._id}`
+      );
+      setProductDetail(response.data.data);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const updateProduct = { name, price, stocks, status };
+    console.log(updateProduct);
     try {
       const response = await axios.put(
         `http://localhost:9000/api/v1/products/${value._id}`,
