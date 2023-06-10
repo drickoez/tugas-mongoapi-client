@@ -2,25 +2,29 @@ import { useState, useEffect } from "react";
 import Input from "../../components/Input";
 import axios from "axios";
 
-const Edit = ({ value }) => {
+const Edit = ({ value, match }) => {
   const [name, setName] = useState(value?.data?.name);
   const [price, setPrice] = useState(value?.data?.price);
   const [stocks, setStocks] = useState(value?.data?.stocks);
   const [status, setStatus] = useState(value?.data?.status);
 
-  const [productDetail, setProductDetail] = useState({});
+  // const [productDetail, setProductDetail] = useState({});
 
   useEffect(() => {
     getProductDetail();
   }, {});
 
   const getProductDetail = async () => {
-    console.log(match.params._id);
     try {
       const response = await axios.get(
-        `http://localhost:9000/api/v1/product/${match.params._id}`
+        `http://localhost:9000/api/v1/product/${match.params.id}`
       );
-      setProductDetail(response.data.data);
+      if (response.data.data) {
+        setName(response.data.data.name);
+        setPrice(response.data.data.price);
+        setStocks(response.data.data.stocks);
+        setStatus(response.data.data.status);
+      }
     } catch (error) {
       console.log(error.message);
     }
@@ -32,7 +36,7 @@ const Edit = ({ value }) => {
     console.log(updateProduct);
     try {
       const response = await axios.put(
-        `http://localhost:9000/api/v1/products/${value._id}`,
+        `http://localhost:9000/api/v1/products/${match.params.id}`,
         updateProduct
       );
       console.log(response.data);
