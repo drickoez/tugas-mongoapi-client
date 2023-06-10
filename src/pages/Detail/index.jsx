@@ -1,7 +1,34 @@
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { useState, useEffect } from "react";
 import "./index.scss";
 
-const Detail = () => {
+const Detail = ({ value, match }) => {
+  const [_id, setId] = useState(value?.data?._id);
+  const [name, setName] = useState(value?.data?.name);
+  const [price, setPrice] = useState(value?.data?.price);
+  const [stocks, setStocks] = useState(value?.data?.stocks);
+
+  useEffect(() => {
+    getProductDetail();
+  }, {});
+
+  const getProductDetail = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:9000/api/v1/product/${match.params.id}`
+      );
+      if (response.data.data) {
+        setId(response.data.data._id);
+        setName(response.data.data.name);
+        setPrice(response.data.data.price);
+        setStocks(response.data.data.stocks);
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
   return (
     <div className="main">
       <Link to="/" className="btn btn-primary">
@@ -12,19 +39,19 @@ const Detail = () => {
         <tbody>
           <tr>
             <td>ID</td>
-            <td>: asdasdasdasd</td>
+            <td>: {_id}</td>
           </tr>
           <tr>
             <td>Name</td>
-            <td>: Laptop</td>
+            <td>: {name}</td>
           </tr>
           <tr>
             <td>Price</td>
-            <td>: Rp. 20.000.000</td>
+            <td>: Rp. {price}</td>
           </tr>
           <tr>
             <td>Stock</td>
-            <td>: 10</td>
+            <td>: {stocks}</td>
           </tr>
         </tbody>
       </table>
