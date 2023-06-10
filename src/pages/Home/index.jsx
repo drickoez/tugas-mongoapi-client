@@ -5,6 +5,7 @@ import axios from "axios";
 
 const Home = () => {
   const [productList, setProductList] = useState([]);
+  const [searchProduct, setSearchProduct] = useState("");
 
   useEffect(() => {
     getProduct();
@@ -19,13 +20,31 @@ const Home = () => {
     }
   };
 
+  const filterProductList = productList.filter((product) =>
+    product.name.toLowerCase().includes(searchProduct.toLowerCase())
+  );
+
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:9000/api/v1/products/${id}`);
+      getProduct();
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
   return (
     <div className="main">
       <Link to="/tambah" className="btn btn-primary">
         Tambah Produk
       </Link>
       <div className="search">
-        <input type="text" placeholder="Masukan kata kunci..." />
+        <input
+          type="text"
+          placeholder="Masukan kata kunci..."
+          value={searchProduct}
+          onChange={(e) => setSearchProduct(e.target.value)}
+        />
       </div>
       <table className="table">
         <thead>
@@ -37,14 +56,16 @@ const Home = () => {
           </tr>
         </thead>
         <tbody>
-          {console.log(typeof productList)}
-          {productList.map((value) => (
+          {filterProductList.map((value) => (
             <tr>
               <td>{value._id}</td>
               <td>{value.name}</td>
               <td className="text-right">RP. {value.price}</td>
               <td className="text-center">
-                <Link to="/detail" className="btn btn-sm btn-info">
+                <Link
+                  to={`/detail/${value._id}`}
+                  className="btn btn-sm btn-info"
+                >
                   Detail
                 </Link>
                 {console.log("valueID: ", value._id)}
@@ -54,9 +75,12 @@ const Home = () => {
                 >
                   Edit
                 </Link>
-                <Link to="#" className="btn btn-sm btn-danger">
+                <button
+                  className="btn btn-sm btn-danger"
+                  onClick={() => handleDelete(value._id)}
+                >
                   Delete
-                </Link>
+                </button>
               </td>
             </tr>
           ))}
